@@ -30,12 +30,12 @@ const colorCodeMap = new Map([
 
 /**
  * Returns the name of the color button associated with a code or null if not a color button.
- * @param {number} charCode KeyboardEvent.charCode property from event
+ * @param {number} code KeyboardEvent code (keyCode, which, or charCode) from event
  * @returns {string | null} Color name or null
  */
-function getKeyColor(charCode) {
-  if (colorCodeMap.has(charCode)) {
-    return colorCodeMap.get(charCode);
+function getKeyColor(code) {
+  if (colorCodeMap.has(code)) {
+    return colorCodeMap.get(code);
   }
 
   return null;
@@ -88,7 +88,7 @@ function createOptionsPanel() {
     (evt) => {
       console.debug('Options panel key event:', evt.type, evt.charCode);
 
-      if (getKeyColor(evt.charCode) === 'green') {
+      if (getKeyColor(evt.keyCode || evt.charCode || evt.which) === 'green') {
         return;
       }
 
@@ -195,7 +195,9 @@ const eventHandler = (evt) => {
     evt.defaultPrevented
   );
 
-  if (getKeyColor(evt.charCode) === 'green') {
+  const keyColor = getKeyColor(evt.keyCode || evt.charCode || evt.which);
+
+  if (keyColor === 'green') {
     console.debug('Taking over!');
 
     evt.preventDefault();
@@ -206,7 +208,7 @@ const eventHandler = (evt) => {
       showOptionsPanel(!optionsPanelVisible);
     }
     return false;
-  } else if (getKeyColor(evt.charCode) === 'blue') {
+  } else if (keyColor === 'blue') {
     evt.preventDefault();
     evt.stopPropagation();
 
